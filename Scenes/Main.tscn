@@ -5,10 +5,17 @@
 [ext_resource type="Script" uid="uid://didubeynwlvdy" path="res://Scripts/PlayerHand.gd" id="4_pbw6q"]
 [ext_resource type="Script" uid="uid://ctyti60qgdh53" path="res://Scripts/Cardslot.gd" id="4_rgh2o"]
 [ext_resource type="PackedScene" uid="uid://cwlb2vkb2y6pu" path="res://Scenes/Deck.tscn" id="5_v1gob"]
-[ext_resource type="Script" uid="uid://c1ky71tcqhon8" path="res://Scenes/Deck.gd" id="6_jw32o"]
+[ext_resource type="Script" uid="uid://c1ky71tcqhon8" path="res://Scripts/Deck.gd" id="6_jw32o"]
 [ext_resource type="Script" uid="uid://ns6cnfxbcgwn" path="res://Scripts/input_manager.gd" id="7_jw32o"]
 
 [node name="Main_tscn" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -2
+offset_right = 1923.0
+offset_bottom = 1084.0
+mouse_filter = 2
+color = Color(0, 0.556863, 0.266667, 1)
 
 [node name="CardManager" type="Node2D" parent="."]
 script = ExtResource("1_idj7w")
@@ -16,41 +23,78 @@ script = ExtResource("1_idj7w")
 [node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("4_pbw6q")
 
-[node name="SlotManager" type="Node" parent="."]
+[node name="Foundation" type="Node" parent="."]
 
-[node name="Cardslot" parent="SlotManager" instance=ExtResource("3_kln2b")]
+[node name="Cardslot" parent="Foundation" instance=ExtResource("3_kln2b")]
 light_mask = 3
 visibility_layer = 3
-position = Vector2(1094, 188)
+position = Vector2(1774, 147)
 script = ExtResource("4_rgh2o")
 
-[node name="Cardslot2" parent="SlotManager" instance=ExtResource("3_kln2b")]
+[node name="Cardslot2" parent="Foundation" instance=ExtResource("3_kln2b")]
 light_mask = 3
 visibility_layer = 3
-position = Vector2(927, 188)
+position = Vector2(1607, 147)
 script = ExtResource("4_rgh2o")
 
-[node name="Cardslot3" parent="SlotManager" instance=ExtResource("3_kln2b")]
+[node name="Cardslot3" parent="Foundation" instance=ExtResource("3_kln2b")]
 light_mask = 3
 visibility_layer = 3
-position = Vector2(760, 185)
+position = Vector2(1440, 144)
 script = ExtResource("4_rgh2o")
 
-[node name="Cardslot4" parent="SlotManager" instance=ExtResource("3_kln2b")]
+[node name="Cardslot4" parent="Foundation" instance=ExtResource("3_kln2b")]
 light_mask = 3
 visibility_layer = 3
-position = Vector2(588, 187)
+position = Vector2(1270, 144)
 script = ExtResource("4_rgh2o")
-
-[node name="Cardslot5" parent="SlotManager" instance=ExtResource("3_kln2b")]
-light_mask = 3
-visibility_layer = 3
-position = Vector2(1262, 187)
-script = ExtResource("4_rgh2o")
-
-[node name="Deck" parent="." instance=ExtResource("5_v1gob")]
-position = Vector2(150, 890)
-script = ExtResource("6_jw32o")
 
 [node name="InputManager" type="Node2D" parent="."]
 script = ExtResource("7_jw32o")
+
+[node name="Tableau" type="Node" parent="."]
+
+[node name="Cardslot5" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(237, 452)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Cardslot6" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(437, 450)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Cardslot7" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(637, 450)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Cardslot8" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(844, 450)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Cardslot9" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(1048, 450)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Cardslot10" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(1254, 450)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Cardslot11" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(1465, 450)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Cardslot12" parent="Tableau" instance=ExtResource("3_kln2b")]
+position = Vector2(1671, 450)
+script = ExtResource("4_rgh2o")
+slot_type = 1
+
+[node name="Deck" parent="." instance=ExtResource("5_v1gob")]
+z_index = 1
+position = Vector2(118, 145)
+script = ExtResource("6_jw32o")

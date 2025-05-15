@@ -33,11 +33,18 @@ func end_drag():
 	card_being_dragged.scale = Vector2(0.55, 0.55)
 	var card_slot_found = check_for_card_slot()
 	if card_slot_found and not card_slot_found.card_in_slot:
-			player_hand_reference.remove_card_from_hand(card_being_dragged)
-			#card dropped in empty card slot
-			card_being_dragged.position = card_slot_found.position
-			card_being_dragged.get_node("Area2D/CollisionShape2D").disabled = true
-			card_slot_found.card_in_slot = true
+		if card_slot_found.slot_type == card_slot_found.SlotType.FOUNDATION:
+			# handle foundation drop logic
+			print("Dropped in foundation!")
+		elif card_slot_found.slot_type == card_slot_found.SlotType.TABLEAU:
+			# handle tableau drop logic
+			print("Dropped in tableau!")
+		
+		player_hand_reference.remove_card_from_hand(card_being_dragged)
+		#card dropped in empty card slot
+		card_being_dragged.position = card_slot_found.position
+		card_being_dragged.get_node("Area2D/CollisionShape2D").disabled = true
+		card_slot_found.card_in_slot = true
 	else:
 		player_hand_reference.add_card_to_hand(card_being_dragged, DEFAULT_MOVE_SPEED)
 		

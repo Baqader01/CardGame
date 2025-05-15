@@ -1,20 +1,19 @@
 extends Node2D
 
 const CARD_WIDTH = 150
-const  HAND_Y_POSITION = 890
+const  HAND_Y_POSITION = 145
+const  HAND_X_POSITION = 300
 const DEFAULT_MOVE_SPEED = 0.1
 
 var player_hand = []
-var center_screen_x
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	center_screen_x = get_viewport().size.x/2
-
+	
+signal card_count_changed(new_count)
 
 func add_card_to_hand(card, speed):
 	if card not in player_hand:
-		player_hand.insert(0, card)
+		#add card to end of hand
+		player_hand.append(card)
+		emit_signal("card_count_changed", player_hand.size())
 		update_hand_positions(speed)
 	else:
 		animate_card_to_position(card, card.hand_position, DEFAULT_MOVE_SPEED)
@@ -28,9 +27,7 @@ func update_hand_positions(speed):
 		animate_card_to_position(card, new_position, speed)
 
 func calculate_card_position(index):
-	var total_width = (player_hand.size() -1) * CARD_WIDTH
-	var x_offset = center_screen_x + index * CARD_WIDTH - total_width / 2
-	return x_offset
+	return HAND_X_POSITION + index * CARD_WIDTH
 
 func animate_card_to_position(card, new_position, speed):
 	var tween = get_tree().create_tween()
@@ -39,4 +36,5 @@ func animate_card_to_position(card, new_position, speed):
 func remove_card_from_hand(card):
 	if card in player_hand:
 		player_hand.erase(card)
+		emit_signal("card_count_changed", player_hand.size())
 		update_hand_positions(DEFAULT_MOVE_SPEED)
