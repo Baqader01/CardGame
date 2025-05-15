@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://bl4bh7l63hfnk"]
+
+[ext_resource type="Script" uid="uid://n5y78vflv3vc" path="res://Scripts/Card.gd" id="1_3p273"]
+[ext_resource type="Texture2D" uid="uid://bhme4g53t2snq" path="res://assets/Cards/ace_of_spades.png" id="1_pnb5n"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3p273"]
+size = Vector2(1016, 1472)
+
+[node name="Card" type="Node2D"]
+z_index = -2
+position = Vector2(150, 890)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_3p273")
+
+[node name="CardImage" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_pnb5n")
+
+[node name="Area2D" type="Area2D" parent="."]
+scale = Vector2(0.5, 0.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_3p273")
+
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
+[connection signal="ready" from="Area2D" to="." method="_on_area_2d_ready"]

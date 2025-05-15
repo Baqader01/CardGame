@@ -1,0 +1,56 @@
+[gd_scene load_steps=8 format=3 uid="uid://b7yhbruqnqxel"]
+
+[ext_resource type="Script" uid="uid://drskmpq5m8c62" path="res://Scripts/CardManager.gd" id="1_idj7w"]
+[ext_resource type="PackedScene" uid="uid://bnwc44e4kna3s" path="res://Scenes/cardslot.tscn" id="3_kln2b"]
+[ext_resource type="Script" uid="uid://didubeynwlvdy" path="res://Scripts/PlayerHand.gd" id="4_pbw6q"]
+[ext_resource type="Script" uid="uid://ctyti60qgdh53" path="res://Scripts/Cardslot.gd" id="4_rgh2o"]
+[ext_resource type="PackedScene" uid="uid://cwlb2vkb2y6pu" path="res://Scenes/Deck.tscn" id="5_v1gob"]
+[ext_resource type="Script" uid="uid://c1ky71tcqhon8" path="res://Scenes/Deck.gd" id="6_jw32o"]
+[ext_resource type="Script" uid="uid://ns6cnfxbcgwn" path="res://Scripts/input_manager.gd" id="7_jw32o"]
+
+[node name="Main_tscn" type="Node2D"]
+
+[node name="CardManager" type="Node2D" parent="."]
+script = ExtResource("1_idj7w")
+
+[node name="PlayerHand" type="Node2D" parent="."]
+script = ExtResource("4_pbw6q")
+
+[node name="SlotManager" type="Node" parent="."]
+
+[node name="Cardslot" parent="SlotManager" instance=ExtResource("3_kln2b")]
+light_mask = 3
+visibility_layer = 3
+position = Vector2(1094, 188)
+script = ExtResource("4_rgh2o")
+
+[node name="Cardslot2" parent="SlotManager" instance=ExtResource("3_kln2b")]
+light_mask = 3
+visibility_layer = 3
+position = Vector2(927, 188)
+script = ExtResource("4_rgh2o")
+
+[node name="Cardslot3" parent="SlotManager" instance=ExtResource("3_kln2b")]
+light_mask = 3
+visibility_layer = 3
+position = Vector2(760, 185)
+script = ExtResource("4_rgh2o")
+
+[node name="Cardslot4" parent="SlotManager" instance=ExtResource("3_kln2b")]
+light_mask = 3
+visibility_layer = 3
+position = Vector2(588, 187)
+script = ExtResource("4_rgh2o")
+
+[node name="Cardslot5" parent="SlotManager" instance=ExtResource("3_kln2b")]
+light_mask = 3
+visibility_layer = 3
+position = Vector2(1262, 187)
+script = ExtResource("4_rgh2o")
+
+[node name="Deck" parent="." instance=ExtResource("5_v1gob")]
+position = Vector2(150, 890)
+script = ExtResource("6_jw32o")
+
+[node name="InputManager" type="Node2D" parent="."]
+script = ExtResource("7_jw32o")

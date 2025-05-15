@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://cwlb2vkb2y6pu"]
+
+[ext_resource type="Texture2D" uid="uid://boqeliko5m7hm" path="res://assets/Cards/Back Blue.png" id="1_57cf8"]
+
+[sub_resource type="GDScript" id="GDScript_v1gob"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_57cf8"]
+size = Vector2(143, 205)
+
+[node name="Deck" type="Node2D"]
+script = SubResource("GDScript_v1gob")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.286585, 0.285925)
+texture = ExtResource("1_57cf8")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_57cf8")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+z_index = -2
+offset_left = -8.0
+offset_top = -137.0
+offset_right = 32.0
+offset_bottom = -97.0
+theme_override_font_sizes/normal_font_size = 25
+text = "2
+"
