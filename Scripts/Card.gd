@@ -5,6 +5,8 @@ signal hovered
 signal hovered_off
 
 var hand_position
+var rank = ""
+var suit = ""
 
 func _on_area_2d_mouse_entered() -> void:
 	emit_signal("hovered", self)

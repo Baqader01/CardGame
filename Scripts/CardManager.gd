@@ -9,6 +9,7 @@ var card_being_dragged
 var screen_size
 var is_hovering_on_card
 var player_hand_reference 
+var card_database_reference = preload("res://Scripts/CardDatabase.gd").new()
 
 func _ready() -> void:
 	screen_size = get_viewport_rect().size
@@ -32,7 +33,9 @@ func start_drag(card):
 func end_drag():
 	card_being_dragged.scale = Vector2(0.55, 0.55)
 	var card_slot_found = check_for_card_slot()
-	if card_slot_found and not card_slot_found.card_in_slot:
+	if card_slot_found:
+		var first_card = card_slot_found.cards.is_empty()
+		
 		if card_slot_found.slot_type == card_slot_found.SlotType.FOUNDATION:
 			# handle foundation drop logic
 			print("Dropped in foundation!")
@@ -40,15 +43,31 @@ func end_drag():
 			# handle tableau drop logic
 			print("Dropped in tableau!")
 		
+		card_slot_found.cards.append(card_being_dragged)
 		player_hand_reference.remove_card_from_hand(card_being_dragged)
-		#card dropped in empty card slot
+		
 		card_being_dragged.position = card_slot_found.position
+		
+		# Update all card positions in the slot after adding the new card
+		update_slot_positions(card_slot_found)
+
+			
 		card_being_dragged.get_node("Area2D/CollisionShape2D").disabled = true
-		card_slot_found.card_in_slot = true
 	else:
 		player_hand_reference.add_card_to_hand(card_being_dragged, DEFAULT_MOVE_SPEED)
 		
 	card_being_dragged = null
+
+func update_slot_positions(slot):
+	var offset_y = 30
+	
+	slot.cards.sort_custom(card_database_reference.compare_cards_by_rank)
+
+	for i in range(slot.cards.size()):
+		var card = slot.cards[i]
+		card.position = slot.position + Vector2(0, offset_y * i)
+		card.z_index = i
+
 
 func connect_card_signals(card):
 	card.connect("hovered", on_hovered_over_card)

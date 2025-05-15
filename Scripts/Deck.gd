@@ -43,6 +43,8 @@ func draw_card():
 		$RichTextLabel.text = str(player_deck.size())
 		var card_scene = preload(CARD_SCENE_PATH)
 		var new_card = card_scene.instantiate()
+		new_card.rank = "Ace"
+		new_card.suit = "Hearts"
 		new_card.get_node("CardImage").texture = load(card_image)
 		$"../CardManager". add_child(new_card)
 		new_card.name = "Card"
