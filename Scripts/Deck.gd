@@ -13,6 +13,10 @@ var card_database_reference
 func _ready() -> void:
 	card_database_reference = preload("res://Scripts/CardDatabase.gd")
 	
+	player_deck.append({"rank": "Ace", "suit":"Hearts"})
+	player_deck.append({"rank": "2", "suit":"Hearts"})
+	player_deck.append({"rank": "3", "suit":"Hearts"})
+	
 	# Access the constants via the card_database instance
 	for suit in card_database_reference.SUIT:
 		for rank in card_database_reference.RANK:
@@ -43,8 +47,8 @@ func draw_card():
 		$RichTextLabel.text = str(player_deck.size())
 		var card_scene = preload(CARD_SCENE_PATH)
 		var new_card = card_scene.instantiate()
-		new_card.rank = "Ace"
-		new_card.suit = "Hearts"
+		new_card.rank = card_drawn["rank"]
+		new_card.suit = card_drawn["suit"]
 		new_card.get_node("CardImage").texture = load(card_image)
 		$"../CardManager". add_child(new_card)
 		new_card.name = "Card"
