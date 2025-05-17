@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 const NO_OF_PILES = 6
 
