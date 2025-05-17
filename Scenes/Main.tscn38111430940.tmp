@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7yhbruqnqxel"]
+[gd_scene load_steps=3 format=3 uid="uid://b7yhbruqnqxel"]
 
 [ext_resource type="Script" uid="uid://c2y7xl1xf2j1p" path="res://Scripts/Board.gd" id="1_50glp"]
+[ext_resource type="PackedScene" uid="uid://bl4bh7l63hfnk" path="res://Scenes/Card.tscn" id="2_idj7w"]
 
 [node name="Main_tscn" type="Node2D"]
 script = ExtResource("1_50glp")
@@ -11,3 +12,8 @@ offset_right = 1923.0
 offset_bottom = 1084.0
 mouse_filter = 2
 color = Color(0, 0.556863, 0.266667, 1)
+
+[node name="Card" parent="." instance=ExtResource("2_idj7w")]
+position = Vector2(541, 301)
+start_flipped = null
+auto_load_textures = null
