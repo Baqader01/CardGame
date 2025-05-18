@@ -44,7 +44,7 @@ func _input(event):
 	#Handle all card drag events
 	
 	#dont move card if mouse not on the card
-	if not is_mouse_entered or (rank == "" and suit == ""):
+	if not is_mouse_entered:
 		return
 	
 	# can move only top card
@@ -67,7 +67,6 @@ func flip():
 	is_flipped = not is_flipped
 
 func load_texture():
-	if rank == "" and suit == "": return
 	var path = "res://assets/Cards/%s_of_%s.png" % [rank.to_lower(), suit.to_lower()]
 	return load(path)
 
@@ -77,8 +76,7 @@ func check_valid_move(card):
 	
 	var pile = GameManager.piles[card.pile_id]
 	
-	#empty pile
-	if len(pile) == 1 and (card.suit == "" and card.rank == ""):
+	if pile.is_empty():
 		return true # move cards to an empty pile
 	
 	#dont place cards on top of unflipped cards
@@ -93,17 +91,17 @@ func check_valid_move(card):
 		   (suit in BLACK_SUITS and previous_card.suit in RED_SUITS)
 	
 	#one more in value and opposite suit
-	print(((card_index + 1) == previous_card_index) and  opposite_suit)
 	if ((card_index + 1) == previous_card_index) and  opposite_suit:
 		return true
 	
 	return false
 
 func move_to_new_pile(new_card):
-	print(pile_id)
 	if pile_id != null:
 		var current_pile = GameManager.piles[pile_id]
 		var current_card_index = current_pile.find(self)
+		if current_pile.is_empty():
+			print("hello")
 		
 		var new_pile =  GameManager.piles[new_card.pile_id]
 		
@@ -111,18 +109,27 @@ func move_to_new_pile(new_card):
 		var cards_to_move = current_pile.slice(current_card_index, len(current_pile))
 		for i in range(len(cards_to_move)):
 			var card = cards_to_move[i]
+			card.pile_id = new_card.pile_id
 			card.position = GameManager.get_pile_position(
 				new_card.pile_id, len(new_pile),
 				GameManager.PILE_X_OFFSET, GameManager.PILE_Y_OFFSET
 			)
 			card.z_index = new_pile[-1].z_index + 1
-			new_pile.append(card)#
+			new_pile.append(card)
+			
+		print("Moving to pile :", new_card.pile_id, " New pile len before :", len(new_pile))
 		
 		#remove the top cards from old pile
 		for i in range(len(cards_to_move)):
 			current_pile.pop_back()
 		
-		#flip top=most card of previous pile after moving
+		#var descriptions = []
+		#for cards in current_pile:
+			#if cards.rank != "" and cards.suit != "":
+				#descriptions.append(cards.rank + " of " + cards.suit)
+		#print(", ".join(descriptions) )
+		
+		#flip top most card of previous pile after moving
 		if len(current_pile) > 1:
 			current_pile.back().flip()
 
@@ -130,7 +137,7 @@ func get_overlapping_cards() -> Array:
 	var cards = []
 	for card in $Area2D.get_overlapping_areas():
 		card = card.get_parent()
-		if not card.is_flipped and not (card.rank == "" and card.suit == ""):
+		if not card.is_flipped:
 			cards.append(card)
 	
 	#for card in cards:
