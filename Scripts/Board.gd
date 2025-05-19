@@ -26,8 +26,17 @@ func init_deck():
 	GameManager.deck.shuffle()
 
 func deal_cards():
+	
 	for i in range(GameManager.NO_OF_PILES):
 		var pile = GameManager.piles[i] 
+		
+		#create empty card
+		var empty_card = preload("res://Scenes/Card.tscn").instantiate()
+		empty_card.flip()
+		empty_card.position = GameManager.get_pile_position(0, 0, GameManager.PILE_X_OFFSET, GameManager.PILE_Y_OFFSET)
+		empty_card.pile_id = i
+		pile.append(empty_card)
+		add_child(empty_card)
 		
 		for j in range(0, i + 1):
 			var card = GameManager.deck.pop_back()
@@ -56,6 +65,7 @@ func place_stock_pile():
 			0, 0, GameManager.PILE_X_OFFSET - 300, GameManager.PILE_Y_OFFSET + 30
 		)
 		add_child(card)
+	
 	#place the last card from set below the deck for use
 	var card = GameManager.deck[-1]
 	card.stock = false
