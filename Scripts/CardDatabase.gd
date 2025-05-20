@@ -22,13 +22,13 @@ func compare_cards_by_rank(card_a, card_b):
 
 func is_in_sequence(card_a, card_b) -> bool:
 	var previous_card_index = card_index(card_a)
-	var card_index = card_index(card_b)
+	var next_card_index = card_index(card_b)
 	
 	var opposite_suit = (card_a.suit in RED_SUITS and card_b.suit in BLACK_SUITS) or \
 		   (card_a.suit in BLACK_SUITS and card_b.suit in RED_SUITS)
 	
 	#one more in value and opposite suit
-	if ((previous_card_index + 1) == card_index) and opposite_suit:
+	if ((previous_card_index + 1) == next_card_index) and opposite_suit:
 		return true
 	
 	return false

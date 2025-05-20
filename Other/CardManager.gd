@@ -108,18 +108,6 @@ func highlight_card(card, hovered):
 		card.z_index = 1
 
 #To check if we are clicking on the card
-func check_for_card():
-	var space_state = get_world_2d().direct_space_state
-	var parameters = PhysicsPointQueryParameters2D.new()
-	parameters.position = get_global_mouse_position()
-	parameters.collide_with_areas = true
-	parameters.collision_mask = COLLISION_MASK_CARD
-	var result = space_state.intersect_point(parameters)
-	if result.size() > 0:
-		return get_card_on_top(result)
-	return null
-
-#To check if we are clicking on the card
 func check_for_card_slot():
 	var space_state = get_world_2d().direct_space_state
 	var parameters = PhysicsPointQueryParameters2D.new()
@@ -131,6 +119,17 @@ func check_for_card_slot():
 		return result[0].collider.get_parent()
 	return null
 
+#To check if we are clicking on the card
+func check_for_card():
+	var space_state = get_world_2d().direct_space_state
+	var parameters = PhysicsPointQueryParameters2D.new()
+	parameters.position = get_global_mouse_position()
+	parameters.collide_with_areas = true
+	parameters.collision_mask = COLLISION_MASK_CARD
+	var result = space_state.intersect_point(parameters)
+	if result.size() > 0:
+		return get_card_on_top(result)
+	return null
 
 func get_card_on_top(cards):
 	#assume first card in array is the one on top
@@ -144,5 +143,3 @@ func get_card_on_top(cards):
 			highest_card = current_card
 			highest_index = current_card.z_index
 	return highest_card
-			
-	

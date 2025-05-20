@@ -2,6 +2,8 @@ extends Node2D
 
 signal flipped_changed(is_flipped)
 
+const COLLISION_MASK_CARD = 1
+
 @export var start_flipped := true
 @export var auto_load_textures := true
 
@@ -10,6 +12,7 @@ var stock:bool = false #keep track of whether the card is in the stock pile
 var is_mouse_entered:bool = false
 var is_dragging:bool = false
 var previous_positions = []
+var drag_offset
 
 var rank: String = "":
 	set(value):
@@ -45,17 +48,82 @@ func _input(event):
 		return
 	
 	# can move only top card
-	if Input.is_action_just_pressed("left_click") and not is_flipped and is_valid_drag():
-		is_dragging = true
-		#to return cards to normal position
-		remember_card_position()
+	if Input.is_action_just_pressed("left_click"):
+		var top_card = check_for_card()
+		#if top_card.rank == "":
+			#pass
+			##print("Empty card")
+		#else:
+			#print(top_card)
+		if top_card == self and (not is_flipped) and is_valid_drag():
+			is_dragging = true
+			drag_offset = Vector2(0, get_global_mouse_position().y - global_position.y)
+			#to return cards to normal position
+			remember_card_position()
+	
 	elif event is InputEventMouseMotion and is_dragging:
 		move_cards()
+	
 	elif Input.is_action_just_released("left_click") and is_dragging:
 		is_dragging = false
 		if !drop_card():
 			reset_cards()
 
+#To check if we are clicking on the card
+func check_for_card():
+	var space_state = get_world_2d().direct_space_state
+	var parameters = PhysicsPointQueryParameters2D.new()
+	parameters.position = get_global_mouse_position()
+	parameters.collide_with_areas = true
+	parameters.collision_mask = COLLISION_MASK_CARD
+	var result = space_state.intersect_point(parameters)
+	if result.size() > 0:
+		print(get_card_on_top(result).rank)
+		return get_card_on_top(result)
+	return null
+
+func get_card_on_top(cards):
+	#assume first card in array is the one on top
+	var highest_card = cards[0].collider.get_parent()
+	var highest_index = highest_card.z_index
+	
+	for i in range(cards.size()):
+		var card = cards[i].collider.get_parent()
+		#empty cards from each pile keep entering the array
+		#if card.pile_id != self.pile_id:
+			#continue
+		#
+		if card.is_flipped:
+			continue
+		
+		if card.rank == "" and card.suit == "":
+			continue
+	
+		#loop through each card to find the top card
+		if (card.z_index > highest_index):
+			highest_card = card
+			highest_index = card.z_index
+		return highest_card
+
+#func  is_top_card_under_mouse():
+	#var mouse_pos = get_global_mouse_position()
+	#var query = PhysicsPointQueryParameters2D
+	#query.collide_with_areas = true
+	#var results = get_world_2d().direct_space_state.intersect_point(query)
+	#
+	#var top_card
+	#var highest_z := -1
+#
+	#for result in results:
+		#var area:Area2D = result.collider
+		#if area and area.get_parent() is :
+			#var card = area.get_parent()
+			#if card.z_index > highest_z:
+				#highest_z = card.z_index
+				#top_card = card
+#
+	#return top_card == self
+	
 func is_valid_drag():
 	if pile_id == null:
 		return false
@@ -150,7 +218,8 @@ func move_to_new_pile(new_card):
 		
 		#flip top most card of previous pile after moving
 		if len(current_pile) > 1:
-			current_pile.back().flip()
+			if current_pile.back().is_flipped == true:
+				current_pile.back().flip()
 
 func get_overlapping_cards() -> Array:
 	var card_set := {}
@@ -180,7 +249,7 @@ func move_cards():
 		var cards_to_move = pile.slice(current_card_index, len(pile))
 		for i in range(len(cards_to_move)):
 			var card = cards_to_move[i]
-			card.position = get_global_mouse_position()
+			card.position = get_global_mouse_position() - drag_offset
 			
 			#apply vertical width to separate multipule cards
 			card.position.y += 30 * i

@@ -33,8 +33,9 @@ func deal_cards():
 		#create empty card
 		var empty_card = preload("res://Scenes/Card.tscn").instantiate()
 		empty_card.flip()
-		empty_card.position = GameManager.get_pile_position(0, 0, GameManager.PILE_X_OFFSET, GameManager.PILE_Y_OFFSET)
+		empty_card.position = GameManager.get_pile_position(i, 0, GameManager.PILE_X_OFFSET, GameManager.PILE_Y_OFFSET)
 		empty_card.pile_id = i
+		empty_card.z_index = -1
 		pile.append(empty_card)
 		add_child(empty_card)
 		
