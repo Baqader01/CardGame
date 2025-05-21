@@ -47,9 +47,15 @@ func _input(event):
 	if not is_mouse_entered or (rank == "" and suit == ""):
 		return
 	
+	
 	# can move only top card
-	if Input.is_action_just_pressed("left_click"):
+	elif Input.is_action_just_pressed("left_click"):
 		var top_card = check_for_card()
+		
+		#change sotck
+		if stock:
+			update_stock_on_top()
+			return
 		
 		if top_card == self and (not is_flipped):
 			is_dragging = true
@@ -64,6 +70,21 @@ func _input(event):
 		is_dragging = false
 		if !drop_card():
 			reset_cards()
+
+func update_stock_on_top():
+	var cur_stock_top = GameManager.deck.pop_back()
+	cur_stock_top.flip()
+	cur_stock_top.stock = true
+	var pos = cur_stock_top.position
+	cur_stock_top.position = GameManager.deck[0].position
+	
+	GameManager.deck.insert(0, cur_stock_top)
+	
+	if len(GameManager.deck) > 0:
+		var new_card = GameManager.deck[-1]
+		new_card.stock = false 
+		new_card.flip()
+		new_card.position = pos
 
 #To check if we are clicking on the card
 func check_for_card():
