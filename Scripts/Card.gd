@@ -122,25 +122,6 @@ func get_card_on_top(cards):
 			highest_index = card.z_index
 		return highest_card
 
-#func  is_top_card_under_mouse():
-	#var mouse_pos = get_global_mouse_position()
-	#var query = PhysicsPointQueryParameters2D
-	#query.collide_with_areas = true
-	#var results = get_world_2d().direct_space_state.intersect_point(query)
-	#
-	#var top_card
-	#var highest_z := -1
-#
-	#for result in results:
-		#var area:Area2D = result.collider
-		#if area and area.get_parent() is :
-			#var card = area.get_parent()
-			#if card.z_index > highest_z:
-				#highest_z = card.z_index
-				#top_card = card
-#
-	#return top_card == self
-
 func update_texture():
 	if sprite:
 		sprite.texture = back_texture if is_flipped else front_texture
@@ -214,7 +195,6 @@ func move_to_new_pile(new_card):
 	elif pile_id == null:
 		var new_pile = GameManager.piles[new_card.pile_id]
 		var card = GameManager.deck.pop_back()
-		var pos = card.position
 		card.stock = false
 		card.position = GameManager.get_pile_position(
 			# -1 cause of the empty card
@@ -238,7 +218,15 @@ func move_to_new_pile(new_card):
 		print("YOU WON!!")
 
 func check_win():
-	return false
+	if len(GameManager.deck) > 0:
+		return false
+	
+	for pile in GameManager.piles:
+		for card in pile:
+			if not card.is_flipped:
+				return false
+	
+	return true
 
 #has to check for empty cards too
 func get_overlapping_cards() -> Array:
@@ -270,7 +258,7 @@ func move_cards():
 			card.position = get_global_mouse_position() - drag_offset
 			
 			#apply vertical width to separate multipule cards
-			card.position.y += 30 * i
+			card.position.y += 40 * i
 			
 			#apply high z-index to make cards appear above other piles
 			card.z_index = 100 + i

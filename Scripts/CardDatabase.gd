@@ -6,20 +6,6 @@ const SUIT = ["Hearts", "Diamonds", "Clubs", "Spades"];
 const RED_SUITS = ["Hearts", "Diamonds"]
 const BLACK_SUITS = ["Clubs", "Spades"]
 
-func compare_cards_by_rank(card_a, card_b):
-	var rank_a = card_a.rank  # card's rank property, e.g. "Ace", "2", etc.
-	var rank_b = card_b.rank
-
-	var index_a = RANK.find(rank_a)
-	var index_b = RANK.find(rank_b)
-
-	if index_a < index_b:
-		return -1
-	elif index_a > index_b:
-		return 1
-	else:
-		return 0
-
 func is_in_sequence(card_a, card_b) -> bool:
 	var previous_card_index = card_index(card_a)
 	var next_card_index = card_index(card_b)

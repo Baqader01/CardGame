@@ -3,15 +3,18 @@ extends Node2D
 var player_deck = []
 var waste_pile = []
 
+@onready var label = Label.new()
+
 func _ready() -> void:
 	init_deck()
 	deal_cards()
 	place_stock_pile()
-	
-	#$RichTextLabel.text = str(player_deck.size())
+
+func _process(delta: float) -> void:
+	label.text = str(GameManager.deck.size())
 
 func init_deck():
-		# Access the constants via the card_database instance
+	# Access the constants via the card_database instance
 	for suit in CardDatabase.SUIT:
 		for rank in CardDatabase.RANK:
 			var card = preload("res://Scenes/Card.tscn").instantiate()
@@ -22,8 +25,11 @@ func init_deck():
 			GameManager.deck.append(card)
 			
 	#7, 9, 10
-	seed(9)
 	GameManager.deck.shuffle()
+	
+	#adding deck size
+	label.set_position(Vector2(490, 100))
+	add_child(label)
 
 func deal_cards():
 	
@@ -48,14 +54,6 @@ func deal_cards():
 			card.pile_id = i
 			pile.append(card)
 			add_child(card)
-		
-		#if player_deck.size() == 0:
-			#$Area2D/CollisionShape2D.disabled = true
-			#$Sprite2D.visible = false
-			#$RichTextLabel.visible =  false
-		#$RichTextLabel.text = str(player_deck.size())
-		#$"../PlayerHand".add_card_to_hand(new_card, CARD_DRAW_SPEED)
-		#waste_pile.insert(0, new_card)
 
 func place_stock_pile():
 	#place the remaining cards on a stock pile
@@ -68,10 +66,10 @@ func place_stock_pile():
 		add_child(card)
 	
 	#place the last card from set below the deck for use
-	var card = GameManager.deck[-1]
-	card.stock = false
-	card.flip()
-	card.position = GameManager.get_pile_position(
+	var last_card = GameManager.deck[-1]
+	last_card.stock = false
+	last_card.flip()
+	last_card.position = GameManager.get_pile_position(
 		0, 0,  GameManager.PILE_X_OFFSET - 300, GameManager.PILE_Y_OFFSET + 300
 	)
-	add_child(card)
+	add_child(last_card)

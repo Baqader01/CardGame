@@ -14,5 +14,5 @@ func _init() -> void:
 
 func get_pile_position(pile_index, card_index, X_OFFSET, Y_OFFSET):
 	var x = 150 * pile_index
-	var y = 30 * card_index
+	var y = 40 * card_index
 	return Vector2(x + X_OFFSET, y + Y_OFFSET)
