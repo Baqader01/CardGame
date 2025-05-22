@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7yhbruqnqxel"]
+
+[ext_resource type="Script" uid="uid://c2y7xl1xf2j1p" path="res://Scripts/Board.gd" id="1_50glp"]
+[ext_resource type="PackedScene" uid="uid://bnwc44e4kna3s" path="res://Scenes/cardslot.tscn" id="2_idj7w"]
+[ext_resource type="Script" uid="uid://ctyti60qgdh53" path="res://Scripts/Cardslot.gd" id="3_kln2b"]
+
+[node name="Main_tscn" type="Node2D"]
+script = ExtResource("1_50glp")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -2
+offset_right = 1923.0
+offset_bottom = 1084.0
+mouse_filter = 2
+color = Color(0, 0.556863, 0.266667, 1)
+
+[node name="SlotManager" type="Node2D" parent="."]
+
+[node name="Cardslot" parent="SlotManager" instance=ExtResource("2_idj7w")]
+position = Vector2(655, 160)
+script = ExtResource("3_kln2b")
+
+[node name="Cardslot2" parent="SlotManager" instance=ExtResource("2_idj7w")]
+position = Vector2(851, 160)
+script = ExtResource("3_kln2b")
+
+[node name="Cardslot3" parent="SlotManager" instance=ExtResource("2_idj7w")]
+position = Vector2(1052, 160)
+script = ExtResource("3_kln2b")
+
+[node name="Cardslot4" parent="SlotManager" instance=ExtResource("2_idj7w")]
+position = Vector2(1244, 160)
+script = ExtResource("3_kln2b")

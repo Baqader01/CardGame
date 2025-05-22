@@ -1,7 +1,6 @@
 extends Node2D
 
 var player_deck = []
-var waste_pile = []
 
 @onready var label = Label.new()
 
@@ -9,8 +8,9 @@ func _ready() -> void:
 	init_deck()
 	deal_cards()
 	place_stock_pile()
+	place_foundation()
 
-func _process(delta: float) -> void:
+func _process(_delta) -> void:
 	label.text = str(GameManager.deck.size())
 
 func init_deck():
@@ -28,11 +28,16 @@ func init_deck():
 	GameManager.deck.shuffle()
 	
 	#adding deck size
-	label.set_position(Vector2(490, 100))
+	label.set_position(Vector2(GameManager.PILE_X_OFFSET - 310, GameManager.PILE_Y_OFFSET - 100))
 	add_child(label)
 
+func place_foundation():
+	for i in range(4):
+		var foundation = preload("res://Scenes/cardslot.tscn").instantiate()
+		foundation.position = GameManager.get_pile_position(i * 1.5, 0, GameManager.PILE_X_OFFSET - 100, GameManager.PILE_Y_OFFSET - 250)
+		add_child(foundation)
+
 func deal_cards():
-	
 	for i in range(GameManager.NO_OF_PILES):
 		var pile = GameManager.piles[i] 
 		

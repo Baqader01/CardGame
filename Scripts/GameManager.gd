@@ -6,7 +6,7 @@ var deck = []
 var piles = []
 
 const PILE_X_OFFSET = 800
-const PILE_Y_OFFSET = 200
+const PILE_Y_OFFSET = 400
 
 func _init() -> void:
 	for i in range(NO_OF_PILES):

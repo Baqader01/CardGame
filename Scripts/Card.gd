@@ -3,6 +3,7 @@ extends Node2D
 signal flipped_changed(is_flipped)
 
 const COLLISION_MASK_CARD = 1
+const COLLISION_MASK_CARD_SLOT = 2
 
 @export var start_flipped := true
 @export var auto_load_textures := true
@@ -18,7 +19,6 @@ var rank: String = "":
 	set(value):
 		rank = value
 		if auto_load_textures: update_texture()
-
 
 var suit: String = "":
 	set(value):
@@ -47,12 +47,11 @@ func _input(event):
 	if not is_mouse_entered or (rank == "" and suit == ""):
 		return
 	
-	
 	# can move only top card
 	elif Input.is_action_just_pressed("left_click"):
 		var top_card = check_for_card()
 		
-		#change sotck
+		#change stock
 		if stock:
 			update_stock_on_top()
 			return
@@ -77,12 +76,14 @@ func update_stock_on_top():
 	cur_stock_top.stock = true
 	var pos = cur_stock_top.position
 	cur_stock_top.position = GameManager.deck[0].position
+	cur_stock_top.z_index = 100
 	
 	GameManager.deck.insert(0, cur_stock_top)
 	
 	if len(GameManager.deck) > 0:
 		var new_card = GameManager.deck[-1]
-		new_card.stock = false 
+		new_card.stock = false
+		new_card.z_index = -1
 		new_card.flip()
 		new_card.position = pos
 
@@ -99,6 +100,24 @@ func check_for_card():
 		return get_card_on_top(result)
 	return null
 
+#To check if we are clicking on the card
+func check_for_card_slot():
+	var space_state = get_world_2d().direct_space_state
+	var parameters = PhysicsPointQueryParameters2D.new()
+	parameters.position = get_global_mouse_position()
+	parameters.collide_with_areas = true
+	parameters.collision_mask = COLLISION_MASK_CARD_SLOT
+	var result = space_state.intersect_point(parameters)
+	if result.size() > 0:
+		return result[0].collider.get_parent()
+		
+	#for i in range(result.size()):
+		#var card_slot = result[i].collider.get_parent()
+		#print(card_slot.is_in_group("cardslot"))
+		#if card_slot.is_in_group("cardslot"): #if it is a card slot not a card
+			#return card_slot
+	return null
+
 func get_card_on_top(cards):
 	#assume first card in array is the one on top
 	var highest_card = cards[0].collider.get_parent()
@@ -107,10 +126,12 @@ func get_card_on_top(cards):
 	for i in range(cards.size()):
 		var card = cards[i].collider.get_parent()
 		#empty cards from each pile keep entering the array
-		#if card.pile_id != self.pile_id:
-			#continue
-		#
-		if card.is_flipped:
+		if card.pile_id != self.pile_id:
+			continue
+		
+		if stock:
+			return card
+		elif card.is_flipped:
 			continue
 		
 		if card.rank == "" and card.suit == "":
@@ -138,6 +159,9 @@ func load_texture():
 func check_valid_move(card):
 	if card.pile_id == null or card.pile_id == pile_id:
 		return false
+	
+	#if card.rank == "" and card.suit == "":
+		#return false
 	
 	var pile = GameManager.piles[card.pile_id]
 	
@@ -206,16 +230,18 @@ func move_to_new_pile(new_card):
 		new_pile.append(card)
 		
 		#flip card in the stock
-		var card_on_stock = GameManager.deck[-1]
+		var card_on_stock = GameManager.deck.pop_back()
 		card_on_stock.stock = false
+		new_card.z_index = -1
 		card_on_stock.flip()
 		card_on_stock.position = GameManager.get_pile_position(
-				0, 0,  GameManager.PILE_X_OFFSET - 300, GameManager.PILE_Y_OFFSET + 300
+			0, 0,  GameManager.PILE_X_OFFSET - 300, GameManager.PILE_Y_OFFSET + 300
 		)
 	
 	previous_positions = []
 	if check_win():
 		print("YOU WON!!")
+
 
 func check_win():
 	if len(GameManager.deck) > 0:
@@ -264,14 +290,73 @@ func move_cards():
 			card.z_index = 100 + i
 
 func drop_card():
-	#if card is moved to a valid set, then we need to move it
 	var overlapping_cards = get_overlapping_cards()
-	for card in overlapping_cards:
-		if check_valid_move(card):
-			move_to_new_pile(card)
+	var card_slot = check_for_card_slot()
+	
+	if card_slot:
+		if add_card_to_slot(card_slot):
 			return true
+		else:
+			return false
+	else:
+		for card in overlapping_cards:
+			if check_valid_move(card):
+				move_to_new_pile(card)
+				return true
+	
 	#if cards cannot be moved, we reset the state
 	return false
+
+func add_card_to_slot(card_slot):
+	#if card is moved to a valid set, then we need to move it
+	var isEmpty = card_slot.cards.is_empty()
+	var final_card = null if isEmpty else card_slot.cards.back() 
+	
+	var is_valid_move:bool = false
+	if isEmpty and rank == "Ace":
+		is_valid_move = true
+	elif final_card != null and (CardDatabase.ascending_order(final_card, self)) \
+		and CardDatabase.same_suit(self, final_card):
+		is_valid_move = true
+	
+	if is_valid_move:
+		if self == GameManager.deck.back():
+			GameManager.deck.pop_back()
+			stock = false
+			position = card_slot.position
+			z_index = 5
+			card_slot.cards.append(self)
+			
+			if len(GameManager.deck) > 0:
+				var new_card = GameManager.deck[-1]
+				new_card.stock = true
+				new_card.z_index = -1
+				new_card.flip()
+				new_card.position = GameManager.get_pile_position(
+					0, 0,  GameManager.PILE_X_OFFSET - 300, GameManager.PILE_Y_OFFSET + 300
+				)
+		else:
+			var pile = GameManager.piles[pile_id]
+			var card = pile.pop_back()
+			
+			#remove itself from the pile
+			if pile.has(card):
+				pile.erase(card)
+			
+			#stock = false
+			position = card_slot.position
+			z_index = 5
+			card_slot.cards.append(self)
+			get_node("Area2D/CollisionShape2D").disabled = true
+			
+			#flip top most card of previous pile after moving
+			if len(pile) > 1:
+				if pile.back().is_flipped == true:
+					pile.back().flip()
+			
+		return true
+	else:
+		return false
 
 func remember_card_position():
 	#stock cards are not a part of pile
