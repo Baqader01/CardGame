@@ -19,6 +19,7 @@ func is_in_sequence(card_a, card_b) -> bool:
 func same_suit(card_a, card_b):
 	return card_a.suit == card_b.suit
 
+#is card a smaller than card b
 func ascending_order(card_a, card_b):
 	var previous_card_index = card_index(card_a)
 	var next_card_index = card_index(card_b)

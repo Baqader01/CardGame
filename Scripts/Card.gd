@@ -313,48 +313,51 @@ func add_card_to_slot(card_slot):
 	var final_card = null if isEmpty else card_slot.cards.back() 
 	
 	var is_valid_move:bool = false
-	if isEmpty and rank == "Ace":
+	
+	# and rank == "Ace"
+	if isEmpty:
 		is_valid_move = true
-	elif final_card != null and (CardDatabase.ascending_order(final_card, self)) \
+	
+	elif final_card != null and (CardDatabase.ascending_order(self, final_card)) \
 		and CardDatabase.same_suit(self, final_card):
 		is_valid_move = true
 	
 	if is_valid_move:
-		if self == GameManager.deck.back():
+		if pile_id != null:
+			var pile = GameManager.piles[pile_id]
+			#remove itself from the pile
+			pile.erase(self)
+			
+			pile_id = null
+			
+			position = card_slot.position
+			z_index = card_slot.cards.size() 
+			card_slot.cards.append(self)
+			get_node("Area2D/CollisionShape2D").disabled = true
+			
+			#flip top most card of previous pile after moving
+			if pile.back().is_flipped == true:
+				pile.back().flip()
+			
+			return true
+		
+		elif self == GameManager.deck.back():
 			GameManager.deck.pop_back()
 			stock = false
 			position = card_slot.position
-			z_index = 5
+			z_index = card_slot.cards.size() 
 			card_slot.cards.append(self)
 			
 			if len(GameManager.deck) > 0:
 				var new_card = GameManager.deck[-1]
-				new_card.stock = true
+				new_card.stock = false
 				new_card.z_index = -1
 				new_card.flip()
 				new_card.position = GameManager.get_pile_position(
 					0, 0,  GameManager.PILE_X_OFFSET - 300, GameManager.PILE_Y_OFFSET + 300
 				)
-		else:
-			var pile = GameManager.piles[pile_id]
-			var card = pile.pop_back()
-			
-			#remove itself from the pile
-			if pile.has(card):
-				pile.erase(card)
-			
-			#stock = false
-			position = card_slot.position
-			z_index = 5
-			card_slot.cards.append(self)
-			get_node("Area2D/CollisionShape2D").disabled = true
-			
-			#flip top most card of previous pile after moving
-			if len(pile) > 1:
-				if pile.back().is_flipped == true:
-					pile.back().flip()
-			
-		return true
+			return true
+	
 	else:
 		return false
 
